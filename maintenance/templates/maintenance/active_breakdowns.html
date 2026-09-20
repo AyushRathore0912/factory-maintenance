@@ -1,0 +1,400 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Active Breakdowns | Maintenance Tracker</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- HEADER -->
+
+    <header class="bg-white border-b border-gray-200">
+
+        <div class="max-w-5xl mx-auto px-4 py-4">
+
+            <div class="flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="w-10 h-10 flex items-center
+                               justify-center rounded-lg
+                               bg-gray-100
+                               text-gray-700
+                               hover:bg-gray-200">
+
+                        ←
+
+                    </a>
+
+
+                    <div>
+
+                        <h1 class="text-xl font-bold text-gray-900">
+                            Active Breakdowns
+                        </h1>
+
+                        <p class="text-sm text-gray-500">
+                            Currently open machine breakdowns
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- USER -->
+
+                <div class="hidden sm:block text-right">
+
+                    <p class="text-xs text-gray-500">
+                        Logged in as
+                    </p>
+
+                    <p class="text-sm font-semibold text-gray-800">
+                        {{ request.user.username }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+
+        {% if breakdowns %}
+
+
+        <div class="space-y-4">
+
+
+            {% for breakdown in breakdowns %}
+
+
+            <!-- BREAKDOWN CARD -->
+
+            <div
+                class="bg-white rounded-2xl
+                       border border-red-200
+                       shadow-sm p-5">
+
+
+                <!-- TOP -->
+
+                <div
+                    class="flex flex-col sm:flex-row
+                           sm:items-start
+                           sm:justify-between gap-3">
+
+
+                    <div>
+
+                        <div class="flex items-center gap-2">
+
+                            <span
+                                class="w-3 h-3 rounded-full
+                                       bg-red-500">
+                            </span>
+
+                            <h2
+                                class="text-xl font-bold
+                                       text-gray-900">
+
+                                {{ breakdown.machine.name }}
+
+                            </h2>
+
+                        </div>
+
+
+                        <p class="text-sm text-gray-500 mt-1">
+
+                            {{ breakdown.machine.section.category.name }}
+                            →
+                            {{ breakdown.machine.section.name }}
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- STATUS + REPAIR BUTTON -->
+
+<div class="flex items-center gap-2">
+
+    {% if breakdown.status == "OPEN" %}
+
+    <span
+        class="inline-flex
+               px-3 py-1 rounded-full
+               bg-red-100 text-red-700
+               text-sm font-semibold">
+
+        OPEN
+
+    </span>
+
+    {% else %}
+
+    <span
+        class="inline-flex
+               px-3 py-1 rounded-full
+               bg-yellow-100 text-yellow-700
+               text-sm font-semibold">
+
+        IN PROGRESS
+
+    </span>
+
+    {% endif %}
+
+
+    <!-- MACHINE REPAIRED BUTTON -->
+
+    <form
+        method="POST"
+        action="{% url 'resolve_breakdown' breakdown.id %}">
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="inline-flex
+                   items-center
+                   gap-1
+                   px-3 py-1.5
+                   rounded-lg
+                   bg-green-600
+                   text-white
+                   text-sm
+                   font-semibold
+                   hover:bg-green-700
+                   transition">
+
+            ✓ Repaired
+
+        </button>
+
+    </form>
+
+</div>
+
+                </div>
+
+
+
+                <!-- PROBLEM -->
+
+                <div class="mt-5">
+
+                    <p
+                        class="text-sm font-semibold
+                               text-gray-700">
+
+                        Problem
+
+                    </p>
+
+                    <p
+                        class="text-gray-800 mt-1">
+
+                        {{ breakdown.problem }}
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- SOLUTION -->
+
+                {% if breakdown.solution %}
+
+                <div class="mt-4">
+
+                    <p
+                        class="text-sm font-semibold
+                               text-gray-700">
+
+                        Immediate Action
+
+                    </p>
+
+                    <p
+                        class="text-gray-600 mt-1">
+
+                        {{ breakdown.solution }}
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- DETAILS -->
+
+                <div
+                    class="grid grid-cols-1
+                           sm:grid-cols-3
+                           gap-4 mt-5
+                           pt-4
+                           border-t
+                           border-gray-100">
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Started
+                        </p>
+
+                        <p
+                            class="text-sm font-medium
+                                   text-gray-800 mt-1">
+
+                            {{ breakdown.start_time|date:"d M Y, h:i A" }}
+
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Reported By
+                        </p>
+
+                        <p
+                            class="text-sm font-medium
+                                   text-gray-800 mt-1">
+
+                            {% if breakdown.reported_by %}
+                                {{ breakdown.reported_by.username }}
+                            {% else %}
+                                Unknown
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <p class="text-xs text-gray-500">
+                            Downtime
+                        </p>
+
+                        <p
+                            class="text-sm font-medium
+                                   text-gray-800 mt-1">
+
+                            {{ breakdown.downtime_minutes }} minutes
+
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- NO ACTIVE BREAKDOWN -->
+
+        <div
+            class="bg-white rounded-2xl
+                   border border-gray-200
+                   shadow-sm p-10
+                   text-center">
+
+
+            <div class="text-5xl mb-4">
+                ✅
+            </div>
+
+
+            <h2
+                class="text-xl font-bold
+                       text-gray-900">
+
+                No Active Breakdowns
+
+            </h2>
+
+
+            <p
+                class="text-gray-500
+                       mt-2">
+
+                All machines are currently running
+                without an active breakdown.
+
+            </p>
+
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="inline-block mt-6
+                       px-5 py-3
+                       rounded-xl
+                       bg-blue-600
+                       text-white
+                       font-medium
+                       hover:bg-blue-700">
+
+                Back to Dashboard
+
+            </a>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+</body>
+
+</html>

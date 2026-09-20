@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Report Breakdown | Maintenance Tracker</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb'
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <header class="bg-white border-b border-gray-200">
+
+        <div class="max-w-4xl mx-auto px-4 py-4">
+
+            <div class="flex items-center gap-3">
+
+                <!-- Back button -->
+
+                <a
+                    href="/"
+                    class="w-10 h-10 flex items-center justify-center
+                           rounded-lg bg-gray-100
+                           text-gray-700
+                           hover:bg-gray-200"
+                >
+                    ←
+                </a>
+
+
+                <div>
+
+                    <h1 class="text-xl font-bold text-gray-900">
+                        Report Breakdown
+                    </h1>
+
+                    <p class="text-sm text-gray-500">
+                        Record a machine breakdown
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="max-w-4xl mx-auto px-4 py-6">
+
+
+        <!-- ================================================= -->
+        <!-- BREAKDOWN FORM -->
+        <!-- ================================================= -->
+
+        <form
+            id="breakdownForm"
+            method="POST"
+            action=""
+            class="space-y-6"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- ================================================= -->
+            <!-- MACHINE INFORMATION -->
+            <!-- ================================================= -->
+
+            <section class="bg-white rounded-2xl border
+                            border-gray-200 shadow-sm">
+
+                <div class="px-5 py-4 border-b border-gray-200">
+
+                    <h2 class="font-semibold text-lg text-gray-900">
+                        Machine Information
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Select the machine where the breakdown occurred.
+                    </p>
+
+                </div>
+
+
+                <div class="p-5 space-y-5">
+
+
+                    <!-- Category -->
+
+                    <div>
+
+                        <label
+                            for="category"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            Category
+                        </label>
+
+                        <select
+                            id="category"
+                            name="category"
+                            class="w-full rounded-xl border
+                                   border-gray-300 bg-white
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500"
+                        >
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                            {% for category in categories %}
+
+                                <option value="{{ category.id }}">
+                                    {{ category.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Section -->
+
+                    <div>
+
+                        <label
+                            for="section"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            Section / Line
+                        </label>
+
+                        <select
+                            id="section"
+                            name="section"
+                            class="w-full rounded-xl border
+                                   border-gray-300 bg-white
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500"
+                        >
+
+                            <option value="">
+                                Select section / line
+                            </option>
+
+                            {% for category in categories %}
+
+                                {% for section in category.sections.all %}
+
+                                    <option
+                                        value="{{ section.id }}"
+                                        data-category="{{ category.id }}"
+                                    >
+                                        {{ category.name }} —
+                                        {{ section.name }}
+                                    </option>
+
+                                {% endfor %}
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Machine -->
+
+                    <div>
+
+                        <label
+                            for="machine"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            Machine
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <select
+                            id="machine"
+                            name="machine"
+                            required
+                            class="w-full rounded-xl border
+                                   border-gray-300 bg-white
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500"
+                        >
+
+                            <option value="">
+                                Select machine
+                            </option>
+
+
+                            {% for category in categories %}
+
+                                {% for section in category.sections.all %}
+
+                                    {% for machine in section.machines.all %}
+
+                                        <option
+                                            value="{{ machine.id }}"
+                                            data-category="{{ category.id }}"
+                                            data-section="{{ section.id }}"
+                                        >
+
+                                            {{ machine.name }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                {% endfor %}
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- BREAKDOWN TIMING -->
+            <!-- ================================================= -->
+
+            <section class="bg-white rounded-2xl border
+                            border-gray-200 shadow-sm">
+
+                <div class="px-5 py-4 border-b border-gray-200">
+
+                    <h2 class="font-semibold text-lg text-gray-900">
+                        Breakdown Timing
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Enter when the machine stopped or the problem
+                        was first noticed.
+                    </p>
+
+                </div>
+
+
+                <div class="p-5">
+
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+
+                        <!-- Date -->
+
+                        <div>
+
+                            <label
+                                for="start_date"
+                                class="block text-sm font-medium
+                                       text-gray-700 mb-2"
+                            >
+                                Breakdown Date
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                id="start_date"
+                                name="start_date"
+                                required
+                                class="w-full rounded-xl border
+                                       border-gray-300
+                                       px-4 py-3
+                                       focus:outline-none
+                                       focus:ring-2
+                                       focus:ring-blue-500
+                                       focus:border-blue-500"
+                            >
+
+                        </div>
+
+
+
+                        <!-- Time -->
+
+                        <div>
+
+                            <label
+                                for="start_time"
+                                class="block text-sm font-medium
+                                       text-gray-700 mb-2"
+                            >
+                                Breakdown Start Time
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input
+                                type="time"
+                                id="start_time"
+                                name="start_time"
+                                required
+                                class="w-full rounded-xl border
+                                       border-gray-300
+                                       px-4 py-3
+                                       focus:outline-none
+                                       focus:ring-2
+                                       focus:ring-blue-500
+                                       focus:border-blue-500"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- PROBLEM DETAILS -->
+            <!-- ================================================= -->
+
+            <section class="bg-white rounded-2xl border
+                            border-gray-200 shadow-sm">
+
+                <div class="px-5 py-4 border-b border-gray-200">
+
+                    <h2 class="font-semibold text-lg text-gray-900">
+                        Problem Details
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Describe what happened to the machine.
+                    </p>
+
+                </div>
+
+
+                <div class="p-5 space-y-5">
+
+
+                    <!-- Problem -->
+
+                    <div>
+
+                        <label
+                            for="problem"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            What is the problem?
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <textarea
+                            id="problem"
+                            name="problem"
+                            rows="5"
+                            required
+                            placeholder="Example: Machine stopped suddenly. Motor is running but pump is not operating..."
+                            class="w-full rounded-xl border
+                                   border-gray-300
+                                   px-4 py-3
+                                   resize-none
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500"
+                        ></textarea>
+
+                        <p class="text-xs text-gray-400 mt-2">
+                            Mention symptoms, abnormal sound, alarm,
+                            leakage, electrical issue, mechanical issue, etc.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Immediate Action -->
+
+                    <div>
+
+                        <label
+                            for="solution"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            Immediate Action / Temporary Solution
+                        </label>
+
+                        <textarea
+                            id="solution"
+                            name="solution"
+                            rows="3"
+                            placeholder="Example: Motor checked and coupling tightened..."
+                            class="w-full rounded-xl border
+                                   border-gray-300
+                                   px-4 py-3
+                                   resize-none
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500
+                                   focus:border-blue-500"
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- PRIORITY & PRODUCTION -->
+            <!-- ================================================= -->
+
+            <section class="bg-white rounded-2xl border
+                            border-gray-200 shadow-sm">
+
+                <div class="px-5 py-4 border-b border-gray-200">
+
+                    <h2 class="font-semibold text-lg text-gray-900">
+                        Breakdown Impact
+                    </h2>
+
+                </div>
+
+
+                <div class="p-5 space-y-5">
+
+
+                    <!-- Priority -->
+
+                    <div>
+
+                        <label
+                            for="priority"
+                            class="block text-sm font-medium
+                                   text-gray-700 mb-2"
+                        >
+                            Priority
+                        </label>
+
+                        <select
+                            id="priority"
+                            name="priority"
+                            class="w-full rounded-xl border
+                                   border-gray-300 bg-white
+                                   px-4 py-3
+                                   focus:outline-none
+                                   focus:ring-2
+                                   focus:ring-blue-500"
+                        >
+
+                            <option value="LOW">
+                                Low
+                            </option>
+
+                            <option value="MEDIUM" selected>
+                                Medium
+                            </option>
+
+                            <option value="HIGH">
+                                High
+                            </option>
+
+                            <option value="CRITICAL">
+                                Critical
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Production -->
+
+                    <div>
+
+                        <p class="text-sm font-medium text-gray-700 mb-3">
+                            Is production affected?
+                        </p>
+
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+
+
+                            <label
+                                class="flex items-center gap-3
+                                       border border-gray-200
+                                       rounded-xl p-4
+                                       cursor-pointer
+                                       hover:bg-gray-50"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="production_affected"
+                                    value="YES"
+                                    class="w-4 h-4"
+                                >
+
+                                <div>
+
+                                    <p class="font-medium text-gray-800">
+                                        Yes
+                                    </p>
+
+                                    <p class="text-xs text-gray-500">
+                                        Production is stopped or affected.
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+
+                            <label
+                                class="flex items-center gap-3
+                                       border border-gray-200
+                                       rounded-xl p-4
+                                       cursor-pointer
+                                       hover:bg-gray-50"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="production_affected"
+                                    value="NO"
+                                    checked
+                                    class="w-4 h-4"
+                                >
+
+                                <div>
+
+                                    <p class="font-medium text-gray-800">
+                                        No
+                                    </p>
+
+                                    <p class="text-xs text-gray-500">
+                                        Production is not affected.
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- REMARKS -->
+            <!-- ================================================= -->
+
+            <section class="bg-white rounded-2xl border
+                            border-gray-200 shadow-sm">
+
+                <div class="p-5">
+
+                    <label
+                        for="remarks"
+                        class="block text-sm font-medium
+                               text-gray-700 mb-2"
+                    >
+                        Additional Remarks
+                    </label>
+
+                    <textarea
+                        id="remarks"
+                        name="remarks"
+                        rows="3"
+                        placeholder="Any additional information..."
+                        class="w-full rounded-xl border
+                               border-gray-300
+                               px-4 py-3
+                               resize-none
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500"
+                    ></textarea>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================================================= -->
+            <!-- ACTION BUTTONS -->
+            <!-- ================================================= -->
+
+            <div class="flex flex-col-reverse sm:flex-row
+                        gap-3 sm:justify-end">
+
+                <a
+                    href="/"
+                    class="w-full sm:w-auto
+                           px-6 py-3
+                           rounded-xl
+                           border border-gray-300
+                           bg-white
+                           text-gray-700
+                           text-center
+                           font-medium
+                           hover:bg-gray-50"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="w-full sm:w-auto
+                           px-7 py-3
+                           rounded-xl
+                           bg-red-600
+                           text-white
+                           font-semibold
+                           hover:bg-red-700
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-red-500
+                           focus:ring-offset-2"
+                >
+                    Report Breakdown
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </main>
+
+
+    <!-- ================================================= -->
+    <!-- NO JAVASCRIPT YET -->
+    <!-- ================================================= -->
+
+</body>
+
+</html>

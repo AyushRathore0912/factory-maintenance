@@ -1,0 +1,755 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Maintenance Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+
+        <div class="max-w-7xl mx-auto px-4 py-4">
+
+            <div class="flex items-center justify-between gap-4">
+
+                <!-- LEFT SIDE -->
+
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900">
+                        Maintenance Tracker
+                    </h1>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Factory Machine Dashboard
+                    </p>
+                </div>
+
+
+                <!-- RIGHT SIDE -->
+
+                <div class="flex items-center gap-2 sm:gap-4">
+
+                    <!-- USERNAME -->
+
+                    <div class="hidden sm:block text-right">
+
+                        <p class="text-xs text-gray-500">
+                            Logged in as
+                        </p>
+
+                        <p class="text-sm font-semibold text-gray-800">
+                            {{ request.user.username }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- NOTIFICATION -->
+
+                    <button
+                        type="button"
+                        class="relative w-10 h-10 flex items-center justify-center
+                               rounded-lg bg-gray-100 text-gray-700
+                               hover:bg-gray-200">
+
+                        🔔
+
+                        <span
+                            class="absolute -top-1 -right-1
+                                   min-w-5 h-5 px-1
+                                   flex items-center justify-center
+                                   rounded-full bg-red-600
+                                   text-white text-xs font-bold">
+
+                            0
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- LOGOUT -->
+
+                    <form method="POST" action="{% url 'logout' %}">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="px-3 sm:px-4 py-2 rounded-lg
+                                   bg-red-600 text-white
+                                   text-sm font-medium
+                                   hover:bg-red-700
+                                   transition">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+
+
+        <!-- ================================================= -->
+        <!-- WELCOME -->
+        <!-- ================================================= -->
+
+        <section class="mb-6">
+
+            <h2 class="text-2xl font-bold text-gray-900">
+                Welcome, {{ request.user.username }}
+            </h2>
+
+            <p class="text-gray-500 mt-1">
+                Select a machine to view its current status.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================================================= -->
+        <!-- ACTION BUTTONS -->
+        <!-- ================================================= -->
+
+        <section class="mb-6">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+
+                <!-- REPORT BREAKDOWN -->
+
+                <a
+                    href="{% url 'report_breakdown' %}"
+                    class="bg-red-600 hover:bg-red-700
+                           text-white rounded-2xl
+                           p-5 shadow-sm
+                           transition">
+
+                    <div class="flex items-center gap-4">
+
+                        <div
+                            class="w-12 h-12 rounded-xl
+                                   bg-white/20
+                                   flex items-center justify-center
+                                   text-2xl">
+
+                            ⚠️
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="font-bold text-lg">
+                                Report Breakdown
+                            </h3>
+
+                            <p class="text-sm text-red-100 mt-1">
+                                Report a machine problem
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+
+
+                <!-- ACTIVE BREAKDOWNS -->
+
+                <a
+    href="{% url 'active_breakdowns' %}"
+    class="block bg-white hover:bg-gray-50
+           border border-gray-200
+           rounded-2xl
+           p-5 shadow-sm
+           text-left transition">
+
+    <div class="flex items-center gap-4">
+
+        <div
+            class="w-12 h-12 rounded-xl
+                   bg-red-100
+                   flex items-center justify-center
+                   text-2xl">
+
+            🔧
+
+        </div>
+
+        <div>
+
+            <h3 class="font-bold text-lg text-gray-900">
+                Active Breakdowns
+            </h3>
+
+            <p class="text-sm text-gray-500 mt-1">
+                View machines currently under breakdown
+            </p>
+
+        </div>
+
+    </div>
+
+</a>
+
+                    <div class="flex items-center gap-4">
+
+                        <div
+                            class="w-12 h-12 rounded-xl
+                                   bg-red-100
+                                   flex items-center justify-center
+                                   text-2xl">
+
+                            🔧
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="font-bold text-lg text-gray-900">
+                                Active Breakdowns
+                            </h3>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                View machines currently under breakdown
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================================= -->
+        <!-- SEARCH -->
+        <!-- ================================================= -->
+
+        <section class="mb-6">
+
+            <div class="bg-white rounded-2xl border
+                        border-gray-200 shadow-sm p-5">
+
+                <label
+                    for="machineSearch"
+                    class="block text-sm font-medium
+                           text-gray-700 mb-2">
+
+                    Search Machine
+
+                </label>
+
+                <input
+                    type="text"
+                    id="machineSearch"
+                    placeholder="Search machine name..."
+                    class="w-full rounded-xl
+                           border border-gray-300
+                           bg-white px-4 py-3
+                           focus:outline-none
+                           focus:ring-2
+                           focus:ring-blue-500
+                           focus:border-blue-500">
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================================= -->
+        <!-- MACHINE LIST -->
+        <!-- ================================================= -->
+
+        <div id="machineContainer">
+
+
+            {% for category in categories %}
+
+            <!-- CATEGORY -->
+
+            <section
+                class="category-section mb-8"
+                data-category="{{ category.name|lower }}">
+
+
+                <!-- CATEGORY HEADER -->
+
+                <div class="flex items-center gap-3 mb-4">
+
+                    <div
+                        class="w-1 h-8 bg-blue-600
+                               rounded-full">
+                    </div>
+
+                    <h2
+                        class="text-xl sm:text-2xl
+                               font-bold text-gray-900">
+
+                        {{ category.name }}
+
+                    </h2>
+
+                </div>
+
+
+
+                <!-- SECTIONS -->
+
+                {% for section in category.sections.all %}
+
+                <div
+                    class="section-block mb-6"
+                    data-section="{{ section.name|lower }}">
+
+
+                    <!-- SECTION TITLE -->
+
+                    <div class="mb-3">
+
+                        <h3
+                            class="text-lg font-semibold
+                                   text-gray-800">
+
+                            {{ section.name }}
+
+                        </h3>
+
+                    </div>
+
+
+
+                    <!-- MACHINES -->
+
+                    <div
+                        class="grid grid-cols-1
+                               sm:grid-cols-2
+                               lg:grid-cols-3
+                               xl:grid-cols-4
+                               gap-4">
+
+
+                        {% for machine in section.machines.all %}
+
+
+                        <!-- MACHINE CARD -->
+
+                        <div
+                            class="machine-card bg-white
+                                   rounded-2xl
+                                   border border-gray-200
+                                   shadow-sm
+                                   p-4
+                                   hover:shadow-md
+                                   transition"
+                            data-machine="{{ machine.name|lower }}">
+
+
+                            <!-- MACHINE TOP -->
+
+                            <div
+                                class="flex items-start
+                                       justify-between gap-3">
+
+                                <div>
+
+                                    <h4
+                                        class="font-bold
+                                               text-gray-900
+                                               text-lg">
+
+                                        {{ machine.name }}
+
+                                    </h4>
+
+
+                                    {% if machine.description %}
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500 mt-1">
+
+                                        {{ machine.description }}
+
+                                    </p>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- STATUS -->
+
+                                {% if machine.status == "ON" %}
+
+                                <span
+                                    class="px-2.5 py-1
+                                           rounded-full
+                                           bg-green-100
+                                           text-green-700
+                                           text-xs font-semibold">
+
+                                    ON
+
+                                </span>
+
+
+                                {% elif machine.status == "OFF" %}
+
+                                <span
+                                    class="px-2.5 py-1
+                                           rounded-full
+                                           bg-gray-100
+                                           text-gray-700
+                                           text-xs font-semibold">
+
+                                    OFF
+
+                                </span>
+
+
+                                {% else %}
+
+                                <span
+                                    class="px-2.5 py-1
+                                           rounded-full
+                                           bg-yellow-100
+                                           text-yellow-700
+                                           text-xs font-semibold">
+
+                                    MAINTENANCE
+
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- DIVIDER -->
+
+                            <div
+                                class="border-t
+                                       border-gray-100
+                                       my-4">
+                            </div>
+
+
+
+                            <!-- MACHINE INFO -->
+
+                            <div class="space-y-2">
+
+
+                                <div
+                                    class="flex justify-between
+                                           text-sm">
+
+                                    <span class="text-gray-500">
+                                        Category
+                                    </span>
+
+                                    <span
+                                        class="font-medium
+                                               text-gray-800">
+
+                                        {{ category.name }}
+
+                                    </span>
+
+                                </div>
+
+
+                                <div
+                                    class="flex justify-between
+                                           text-sm">
+
+                                    <span class="text-gray-500">
+                                        Section
+                                    </span>
+
+                                    <span
+                                        class="font-medium
+                                               text-gray-800">
+
+                                        {{ section.name }}
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <!-- ACTION BUTTONS -->
+
+                            <div
+                                class="grid grid-cols-2
+                                       gap-2 mt-4">
+
+
+                                <!-- BREAKDOWN -->
+
+                                <a
+                                    href="{% url 'report_breakdown' %}?machine={{ machine.id }}"
+                                    class="text-center
+                                           px-3 py-2
+                                           rounded-lg
+                                           bg-red-50
+                                           text-red-600
+                                           text-sm font-medium
+                                           hover:bg-red-100
+                                           transition">
+
+                                    Breakdown
+
+                                </a>
+
+
+
+                                <!-- HISTORY -->
+
+                                <button
+                                    type="button"
+                                    class="px-3 py-2
+                                           rounded-lg
+                                           bg-gray-100
+                                           text-gray-700
+                                           text-sm font-medium
+                                           hover:bg-gray-200
+                                           transition">
+
+                                    History
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+
+                        {% empty %}
+
+                        <p class="text-sm text-gray-500">
+                            No machines available in this section.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                {% empty %}
+
+                <p class="text-gray-500">
+                    No sections available.
+                </p>
+
+                {% endfor %}
+
+            </section>
+
+
+            {% empty %}
+
+            <!-- NO DATA -->
+
+            <div
+                class="bg-white rounded-2xl
+                       border border-gray-200
+                       p-8 text-center">
+
+                <p class="text-gray-500">
+                    No machine data available.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ================================================= -->
+
+
+
+    <script>
+
+        /*
+        ============================================
+        MACHINE SEARCH
+        ============================================
+        */
+
+        const searchInput =
+            document.getElementById("machineSearch");
+
+        const machineCards =
+            document.querySelectorAll(".machine-card");
+
+        const sectionBlocks =
+            document.querySelectorAll(".section-block");
+
+        const categorySections =
+            document.querySelectorAll(".category-section");
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener("input", function () {
+
+                const searchValue =
+                    this.value.toLowerCase().trim();
+
+
+                /*
+                SEARCH MACHINES
+                */
+
+                machineCards.forEach(function (card) {
+
+                    const machineName =
+                        card.dataset.machine || "";
+
+                    if (
+                        searchValue === "" ||
+                        machineName.includes(searchValue)
+                    ) {
+
+                        card.style.display = "";
+
+                    } else {
+
+                        card.style.display = "none";
+
+                    }
+
+                });
+
+
+                /*
+                HIDE EMPTY SECTIONS
+                */
+
+                sectionBlocks.forEach(function (section) {
+
+                    const visibleMachines =
+                        section.querySelectorAll(
+                            ".machine-card:not([style*='display: none'])"
+                        );
+
+
+                    if (searchValue !== "") {
+
+                        section.style.display =
+                            visibleMachines.length > 0
+                                ? ""
+                                : "none";
+
+                    } else {
+
+                        section.style.display = "";
+
+                    }
+
+                });
+
+
+                /*
+                HIDE EMPTY CATEGORIES
+                */
+
+                categorySections.forEach(function (category) {
+
+                    const visibleSections =
+                        category.querySelectorAll(
+                            ".section-block:not([style*='display: none'])"
+                        );
+
+
+                    if (searchValue !== "") {
+
+                        category.style.display =
+                            visibleSections.length > 0
+                                ? ""
+                                : "none";
+
+                    } else {
+
+                        category.style.display = "";
+
+                    }
+
+                });
+
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
