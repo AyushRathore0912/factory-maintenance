@@ -30,3 +30,4 @@ staticfiles/
 # OS
 Thumbs.db
 .DS_Store
+production_data.json
