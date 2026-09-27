@@ -4,202 +4,570 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Maintenance Tracker</title>
 
-    <title>Register | Maintenance Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb'
-                    }
-                }
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: #e7ebf0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            color: #303640;
+            overflow-x: hidden;
+        }
+
+        /* =========================
+           BACKGROUND CIRCLES
+        ========================= */
+
+        .circle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .circle.one {
+            width: 280px;
+            height: 280px;
+            top: -100px;
+            left: -100px;
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .circle.two {
+            width: 350px;
+            height: 350px;
+            bottom: -160px;
+            right: -130px;
+            background: rgba(37, 99, 235, 0.07);
+        }
+
+        .circle.three {
+            width: 120px;
+            height: 120px;
+            top: 15%;
+            right: 8%;
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* =========================
+           REGISTER CARD
+        ========================= */
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 560px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .register-card {
+            background: #e7ebf0;
+            border-radius: 28px;
+            padding: 38px 42px;
+            box-shadow:
+                18px 18px 40px rgba(163, 177, 198, 0.55),
+                -18px -18px 40px rgba(255, 255, 255, 0.95);
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 16px;
+
+            border-radius: 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+
+            background: #e7ebf0;
+
+            box-shadow:
+                8px 8px 16px rgba(163, 177, 198, 0.5),
+                -8px -8px 16px rgba(255, 255, 255, 0.9);
+
+            color: #2563eb;
+        }
+
+        .header h1 {
+            font-size: 27px;
+            font-weight: 700;
+            color: #252b33;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #737b86;
+            font-size: 13px;
+        }
+
+        /* =========================
+           MESSAGES
+        ========================= */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .message.error {
+            color: #b42318;
+            background: rgba(254, 226, 226, 0.8);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+        }
+
+        .message.success {
+            color: #15803d;
+            background: rgba(220, 252, 231, 0.8);
+            border: 1px solid rgba(74, 222, 128, 0.25);
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form {
+            width: 100%;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            position: relative;
+            margin-bottom: 21px;
+        }
+
+        .field input {
+            width: 100%;
+            height: 56px;
+
+            border: none;
+            outline: none;
+
+            border-radius: 15px;
+
+            background: #e7ebf0;
+
+            padding: 18px 17px 4px;
+
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #303640;
+
+            box-shadow:
+                inset 6px 6px 12px rgba(163, 177, 198, 0.38),
+                inset -6px -6px 12px rgba(255, 255, 255, 0.85);
+
+            transition: 0.25s ease;
+        }
+
+        .field input:focus {
+            box-shadow:
+                inset 5px 5px 10px rgba(163, 177, 198, 0.28),
+                inset -5px -5px 10px rgba(255, 255, 255, 0.8),
+                0 0 0 2px rgba(37, 99, 235, 0.16),
+                0 0 14px rgba(37, 99, 235, 0.22);
+        }
+
+        .field label {
+            position: absolute;
+            left: 17px;
+            top: 18px;
+
+            font-size: 13px;
+            color: #7a828d;
+
+            pointer-events: none;
+
+            transition: 0.2s ease;
+        }
+
+        .field input:focus + label,
+        .field input:not(:placeholder-shown) + label {
+            top: 7px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .field input::placeholder {
+            color: transparent;
+        }
+
+        /* =========================
+           PASSWORD FIELD
+        ========================= */
+
+        .password-field input {
+            padding-right: 52px;
+        }
+
+        .toggle-password {
+            position: absolute;
+
+            right: 15px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 28px;
+            height: 28px;
+
+            border: none;
+            background: transparent;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: #737b86;
+
+            transition: 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #2563eb;
+        }
+
+        .toggle-password svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        /* =========================
+           REQUIRED
+        ========================= */
+
+        .required {
+            color: #dc2626;
+            font-size: 11px;
+            margin-left: 3px;
+        }
+
+        /* =========================
+           SUBMIT BUTTON
+        ========================= */
+
+        .submit-btn {
+            position: relative;
+
+            width: 100%;
+            height: 55px;
+
+            border: none;
+            border-radius: 15px;
+
+            margin-top: 5px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #3b82f6,
+                #60a5fa
+            );
+
+            background-size: 200% 200%;
+
+            color: white;
+
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            box-shadow:
+                8px 8px 18px rgba(37, 99, 235, 0.25),
+                -5px -5px 12px rgba(255, 255, 255, 0.75);
+
+            transition: 0.25s ease;
+
+            animation: gradientMove 4s ease infinite;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                10px 10px 22px rgba(37, 99, 235, 0.32),
+                -5px -5px 12px rgba(255, 255, 255, 0.8);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
             }
         }
-    </script>
 
+        /* =========================
+           LOGIN LINK
+        ========================= */
+
+        .login-section {
+            text-align: center;
+
+            margin-top: 25px;
+            padding-top: 21px;
+
+            border-top: 1px solid rgba(150, 160, 175, 0.22);
+        }
+
+        .login-section p {
+            font-size: 12px;
+            color: #737b86;
+        }
+
+        .login-section a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+
+        .login-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           SECURITY
+        ========================= */
+
+        .security {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            margin-top: 19px;
+
+            color: #8a929d;
+            font-size: 10px;
+        }
+
+        .security svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            text-align: center;
+            margin-top: 18px;
+
+            font-size: 10px;
+            color: #9299a3;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 18px 12px;
+            }
+
+            .register-card {
+                padding: 30px 22px;
+                border-radius: 23px;
+            }
+
+            .header h1 {
+                font-size: 23px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .logo {
+                width: 62px;
+                height: 62px;
+                font-size: 25px;
+            }
+
+            .circle.three {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
+<body>
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
-
-
-    <!-- REGISTER CONTAINER -->
-
-    <div class="w-full max-w-md">
+    <div class="circle one"></div>
+    <div class="circle two"></div>
+    <div class="circle three"></div>
 
 
-        <!-- CARD -->
+    <div class="register-wrapper">
 
-        <div class="bg-white rounded-2xl shadow-lg
-                    border border-gray-200
-                    p-6 sm:p-8">
-
+        <div class="register-card">
 
             <!-- HEADER -->
 
-            <div class="text-center mb-6">
+            <div class="header">
 
-                <div
-                    class="w-14 h-14 mx-auto
-                           rounded-2xl
-                           bg-blue-100
-                           flex items-center
-                           justify-center
-                           text-2xl">
-
+                <div class="logo">
                     👤
-
                 </div>
 
+                <h1>Create Account</h1>
 
-                <h1
-                    class="text-2xl font-bold
-                           text-gray-900 mt-4">
-
-                    Create Account
-
-                </h1>
-
-
-                <p
-                    class="text-sm text-gray-500
-                           mt-2">
-
+                <p>
                     Register for Maintenance Tracker
-
                 </p>
 
             </div>
-
 
 
             <!-- MESSAGES -->
 
             {% if messages %}
 
-                {% for message in messages %}
+                <div class="messages">
 
-                    <div
-                        class="mb-4 p-3 rounded-xl
-                               {% if message.tags == 'error' %}
-                                   bg-red-50 text-red-700
-                               {% else %}
-                                   bg-green-50 text-green-700
-                               {% endif %}
-                               text-sm">
+                    {% for message in messages %}
 
-                        {{ message }}
+                        <div class="message
+                            {% if message.tags == 'error' %}
+                                error
+                            {% else %}
+                                success
+                            {% endif %}
+                        ">
+                            {{ message }}
+                        </div>
 
-                    </div>
+                    {% endfor %}
 
-                {% endfor %}
+                </div>
 
             {% endif %}
-
 
 
             <!-- REGISTER FORM -->
 
             <form
+                id="registerForm"
+                class="form"
                 method="POST"
                 action="{% url 'register' %}"
-                class="space-y-4">
+            >
 
                 {% csrf_token %}
 
 
-                <!-- FIRST NAME -->
+                <!-- FIRST + LAST NAME -->
 
-                <div>
+                <div class="row">
 
-                    <label
-                        for="first_name"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
+                    <div class="field">
 
-                        First Name
+                        <input
+                            type="text"
+                            id="first_name"
+                            name="first_name"
+                            autocomplete="given-name"
+                            placeholder="First Name"
+                        >
 
-                    </label>
+                        <label for="first_name">
+                            First Name
+                        </label>
 
-
-                    <input
-                        type="text"
-                        id="first_name"
-                        name="first_name"
-                        autocomplete="given-name"
-                        placeholder="Enter first name"
-                        class="w-full rounded-xl
-                               border border-gray-300
-                               px-4 py-3
-                               focus:outline-none
-                               focus:ring-2
-                               focus:ring-blue-500
-                               focus:border-blue-500">
-
-                </div>
+                    </div>
 
 
+                    <div class="field">
 
-                <!-- LAST NAME -->
+                        <input
+                            type="text"
+                            id="last_name"
+                            name="last_name"
+                            autocomplete="family-name"
+                            placeholder="Last Name"
+                        >
 
-                <div>
+                        <label for="last_name">
+                            Last Name
+                        </label>
 
-                    <label
-                        for="last_name"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
-
-                        Last Name
-
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="last_name"
-                        name="last_name"
-                        autocomplete="family-name"
-                        placeholder="Enter last name"
-                        class="w-full rounded-xl
-                               border border-gray-300
-                               px-4 py-3
-                               focus:outline-none
-                               focus:ring-2
-                               focus:ring-blue-500
-                               focus:border-blue-500">
+                    </div>
 
                 </div>
-
 
 
                 <!-- USERNAME -->
 
-                <div>
-
-                    <label
-                        for="username"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
-
-                        Username
-                        <span class="text-red-500">*</span>
-
-                    </label>
-
+                <div class="field">
 
                     <input
                         type="text"
@@ -207,292 +575,354 @@
                         name="username"
                         required
                         autocomplete="username"
-                        placeholder="Choose a username"
-                        class="w-full rounded-xl
-                               border border-gray-300
-                               px-4 py-3
-                               focus:outline-none
-                               focus:ring-2
-                               focus:ring-blue-500
-                               focus:border-blue-500">
+                        placeholder="Username"
+                    >
+
+                    <label for="username">
+                        Username
+                        <span class="required">*</span>
+                    </label>
 
                 </div>
 
 
-
                 <!-- EMAIL -->
 
-                <div>
-
-                    <label
-                        for="email"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
-
-                        Email
-
-                    </label>
-
+                <div class="field">
 
                     <input
                         type="email"
                         id="email"
                         name="email"
                         autocomplete="email"
-                        placeholder="Enter email address"
-                        class="w-full rounded-xl
-                               border border-gray-300
-                               px-4 py-3
-                               focus:outline-none
-                               focus:ring-2
-                               focus:ring-blue-500
-                               focus:border-blue-500">
+                        placeholder="Email"
+                    >
+
+                    <label for="email">
+                        Email
+                    </label>
 
                 </div>
-
 
 
                 <!-- PASSWORD -->
 
-                <div>
+                <div class="field password-field">
 
-                    <label
-                        for="password"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        autocomplete="new-password"
+                        placeholder="Password"
+                    >
 
+                    <label for="password">
                         Password
-                        <span class="text-red-500">*</span>
-
+                        <span class="required">*</span>
                     </label>
 
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        id="togglePassword"
+                        aria-label="Show password"
+                    >
 
-                    <div class="relative">
+                        <svg
+                            id="passwordEye"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
 
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            required
-                            autocomplete="new-password"
-                            placeholder="Create a password"
-                            class="w-full rounded-xl
-                                   border border-gray-300
-                                   px-4 py-3 pr-12
-                                   focus:outline-none
-                                   focus:ring-2
-                                   focus:ring-blue-500
-                                   focus:border-blue-500">
-
-
-                        <button
-                            type="button"
-                            id="togglePassword"
-                            class="absolute right-3
-                                   top-1/2
-                                   -translate-y-1/2
-                                   text-gray-500
-                                   hover:text-gray-700">
-
-                            👁️
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
-
 
 
                 <!-- CONFIRM PASSWORD -->
 
-                <div>
+                <div class="field password-field">
 
-                    <label
-                        for="confirm_password"
-                        class="block text-sm
-                               font-medium
-                               text-gray-700 mb-2">
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        required
+                        autocomplete="new-password"
+                        placeholder="Confirm Password"
+                    >
 
+                    <label for="confirm_password">
                         Confirm Password
-                        <span class="text-red-500">*</span>
-
+                        <span class="required">*</span>
                     </label>
 
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        id="toggleConfirmPassword"
+                        aria-label="Show password"
+                    >
 
-                    <div class="relative">
+                        <svg
+                            id="confirmPasswordEye"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
 
-                        <input
-                            type="password"
-                            id="confirm_password"
-                            name="confirm_password"
-                            required
-                            autocomplete="new-password"
-                            placeholder="Confirm your password"
-                            class="w-full rounded-xl
-                                   border border-gray-300
-                                   px-4 py-3 pr-12
-                                   focus:outline-none
-                                   focus:ring-2
-                                   focus:ring-blue-500
-                                   focus:border-blue-500">
-
-
-                        <button
-                            type="button"
-                            id="toggleConfirmPassword"
-                            class="absolute right-3
-                                   top-1/2
-                                   -translate-y-1/2
-                                   text-gray-500
-                                   hover:text-gray-700">
-
-                            👁️
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
-
 
 
                 <!-- SUBMIT -->
 
                 <button
                     type="submit"
-                    class="w-full
-                           bg-blue-600
-                           hover:bg-blue-700
-                           text-white
-                           font-semibold
-                           rounded-xl
-                           px-4 py-3
-                           transition
-                           focus:outline-none
-                           focus:ring-2
-                           focus:ring-blue-500
-                           focus:ring-offset-2">
-
+                    id="registerButton"
+                    class="submit-btn"
+                >
                     Create Account
-
                 </button>
-
 
             </form>
 
 
-
             <!-- LOGIN LINK -->
 
-            <div
-                class="text-center
-                       mt-6 pt-5
-                       border-t border-gray-200">
+            <div class="login-section">
 
-                <p class="text-sm text-gray-500">
-
+                <p>
                     Already have an account?
 
-                    <a
-                        href="{% url 'login' %}"
-                        class="text-blue-600
-                               font-semibold
-                               hover:text-blue-700">
-
+                    <a href="{% url 'login' %}">
                         Login
-
                     </a>
-
                 </p>
 
             </div>
 
 
+            <!-- SECURITY -->
+
+            <div class="security">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+
+                Secure registration
+
+            </div>
+
         </div>
 
 
-        <!-- FOOTER -->
-
-        <p
-            class="text-center
-                   text-xs text-gray-400
-                   mt-4">
-
+        <div class="footer">
             Maintenance Tracker
-
-        </p>
-
+        </div>
 
     </div>
 
 
-
-    <!-- PASSWORD TOGGLE -->
+    <!-- REGISTER JAVASCRIPT -->
 
     <script>
 
-        const password =
-            document.getElementById("password");
+        document.addEventListener("DOMContentLoaded", function () {
 
-        const confirmPassword =
-            document.getElementById("confirm_password");
+            const password =
+                document.getElementById("password");
+
+            const confirmPassword =
+                document.getElementById("confirm_password");
+
+            const togglePassword =
+                document.getElementById("togglePassword");
+
+            const toggleConfirmPassword =
+                document.getElementById("toggleConfirmPassword");
+
+            const registerForm =
+                document.getElementById("registerForm");
+
+            const registerButton =
+                document.getElementById("registerButton");
 
 
-        const togglePassword =
-            document.getElementById("togglePassword");
+            /* =========================
+               PASSWORD TOGGLE
+            ========================= */
 
-        const toggleConfirmPassword =
-            document.getElementById("toggleConfirmPassword");
+            function setupPasswordToggle(
+                input,
+                button
+            ) {
 
+                button.addEventListener("click", function () {
 
-        togglePassword.addEventListener(
-            "click",
-            function () {
+                    if (input.type === "password") {
 
-                if (password.type === "password") {
+                        input.type = "text";
 
-                    password.type = "text";
+                        button.setAttribute(
+                            "aria-label",
+                            "Hide password"
+                        );
 
-                    this.textContent = "🙈";
+                        button.innerHTML = `
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="M3 3l18 18"></path>
+                                <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path>
+                                <path d="M9.9 4.2A10.8 10.8 0 0 1 12 4c6.5 0 10 8 10 8a18.2 18.2 0 0 1-3.1 4.4"></path>
+                                <path d="M6.6 6.6C3.7 8.5 2 12 2 12s3.5 8 10 8a9.7 9.7 0 0 0 4.4-1"></path>
+                            </svg>
+                        `;
 
-                } else {
+                    } else {
 
-                    password.type = "password";
+                        input.type = "password";
 
-                    this.textContent = "👁️";
+                        button.setAttribute(
+                            "aria-label",
+                            "Show password"
+                        );
 
-                }
+                        button.innerHTML = `
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        `;
+                    }
+
+                });
 
             }
-        );
 
 
-        toggleConfirmPassword.addEventListener(
-            "click",
-            function () {
+            setupPasswordToggle(
+                password,
+                togglePassword
+            );
 
-                if (confirmPassword.type === "password") {
+            setupPasswordToggle(
+                confirmPassword,
+                toggleConfirmPassword
+            );
 
-                    confirmPassword.type = "text";
 
-                    this.textContent = "🙈";
+            /* =========================
+               FORM SUBMISSION
+            ========================= */
 
-                } else {
+            registerForm.addEventListener(
+                "submit",
+                function (event) {
 
-                    confirmPassword.type = "password";
+                    const username =
+                        document.getElementById("username");
 
-                    this.textContent = "👁️";
+                    if (!username.value.trim()) {
+
+                        event.preventDefault();
+
+                        username.focus();
+
+                        return;
+                    }
+
+
+                    if (!password.value) {
+
+                        event.preventDefault();
+
+                        password.focus();
+
+                        return;
+                    }
+
+
+                    if (!confirmPassword.value) {
+
+                        event.preventDefault();
+
+                        confirmPassword.focus();
+
+                        return;
+                    }
+
+
+                    if (
+                        password.value !==
+                        confirmPassword.value
+                    ) {
+
+                        event.preventDefault();
+
+                        alert("Passwords do not match.");
+
+                        confirmPassword.focus();
+
+                        return;
+                    }
+
+
+                    /*
+                     * IMPORTANT:
+                     * Do NOT prevent valid form submission.
+                     * Django needs to receive this POST request.
+                     */
+
+                    registerButton.textContent =
+                        "Creating Account...";
+
+                    registerButton.disabled = true;
 
                 }
+            );
 
-            }
-        );
+        });
 
     </script>
-
 
 </body>
 
